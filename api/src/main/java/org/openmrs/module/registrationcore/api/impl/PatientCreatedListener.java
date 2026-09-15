@@ -95,7 +95,7 @@ public class PatientCreatedListener extends PatientActionListener {
                 }
             }
         }else{
-            throw new MpiException("PeformMpiAction error: extractPatient returned null patient");
+            LOGGER.debug("performMpiAction: no patient found for event, skipping MPI export");
         }
     }
 

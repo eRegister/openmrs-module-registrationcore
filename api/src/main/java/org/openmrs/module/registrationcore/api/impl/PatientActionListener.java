@@ -118,6 +118,9 @@ public abstract class PatientActionListener implements SubscribableEventListener
         validateMessage(message);
         // Property name referenced from org.openmrs.event.EventEngine.fireEvent(javax.jms.Destination, java.lang.Object)
         String patientUuid = getMessagePropertyValue(message, "uuid");
+        if (patientUuid == null) {
+            return null;
+        }
         return getPatient(patientUuid);
     }
 
@@ -166,22 +169,19 @@ public abstract class PatientActionListener implements SubscribableEventListener
     }
 
     private String getPersonUuidFromMessage(Message message) throws JMSException {
-        String uuidvalue = "";
         String uuidString = ((MapMessage) message).getString("uuid");
         String classnameString = ((MapMessage) message).getString("classname");
 
-        if(personService != null) {
+        if (personService != null) {
             if (classnameString.equalsIgnoreCase("org.openmrs.PersonAddress")) {
-                uuidvalue = personService.getPersonAddressByUuid(uuidString).getPerson().getUuid();
+                PersonAddress address = personService.getPersonAddressByUuid(uuidString);
+                return (address != null && address.getPerson() != null) ? address.getPerson().getUuid() : null;
             } else if (classnameString.equalsIgnoreCase("org.openmrs.PersonAttribute")) {
-                uuidvalue = personService.getPersonAttributeByUuid(uuidString).getPerson().getUuid();
-            } else {
-                uuidvalue = uuidString;
+                PersonAttribute attribute = personService.getPersonAttributeByUuid(uuidString);
+                return (attribute != null && attribute.getPerson() != null) ? attribute.getPerson().getUuid() : null;
             }
-        } else {
-            uuidvalue = uuidString;
         }
-        return uuidvalue;
+        return uuidString;
     }
 
     /**
@@ -191,10 +191,6 @@ public abstract class PatientActionListener implements SubscribableEventListener
      * @return retrieved patient
      */
     private Patient getPatient(String patientUuid) {
-        Patient patient = patientService.getPatientByUuid(patientUuid);
-        if (patient == null){
-            throw new APIException("Unable to retrieve patient by uuid");
-        }
-        return patient;
+        return patientService.getPatientByUuid(patientUuid);
     }
 }
