@@ -91,7 +91,7 @@ public class OpenEmpiPatientFetcherTest extends BaseRegistrationCoreSensitiveTes
     }
 
     private void executeDataSets() throws Exception {
-        executeDataSet("org/openmrs/module/idgen/include/TestData.xml");
+        executeDataSet("idgen_identifier_source_dataset.xml");
         executeDataSet("identifiers_dataset.xml");
     }
 

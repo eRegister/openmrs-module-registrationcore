@@ -82,10 +82,23 @@ public class RegistrationCoreServiceTest extends BaseRegistrationCoreSensitiveTe
 	
 	@Before
 	public void before() throws Exception {
+		// idgen's generateIdentifiersInternal() runs with @Transactional(propagation =
+		// REQUIRES_NEW), i.e. a separate pooled DB connection. This fixture row is only visible
+		// there once actually committed, but the test's own transaction is left uncommitted (and
+		// rolled back at teardown) by design. Commit just this one small, idempotent, fixed-id
+		// fixture now (the same way OpenMRS's own standard test dataset is committed once and
+		// shared read-only across the whole suite), then start a fresh transaction for the rest
+		// of the test so per-test rollback isolation still applies to everything else, including
+		// the other fixture datasets below.
+		executeDataSet("idgen_identifier_source_dataset.xml");
+		org.springframework.test.context.transaction.TestTransaction.flagForCommit();
+		org.springframework.test.context.transaction.TestTransaction.end();
+		org.springframework.test.context.transaction.TestTransaction.start();
+
 		executeDataSet("identifiers_dataset.xml");
 		executeDataSet("mpi_global_properties_dataset.xml");
 		executeDataSet("patients_dataset.xml");
-		executeDataSet("org/openmrs/module/idgen/include/TestData.xml");
+
 		service = Context.getService(RegistrationCoreService.class);
 		adminService.saveGlobalProperty(new GlobalProperty(RegistrationCoreConstants.GP_OPENMRS_IDENTIFIER_SOURCE_ID, "1"));
         biometricsIdentifierType = new PatientIdentifierType();
@@ -94,7 +107,7 @@ public class RegistrationCoreServiceTest extends BaseRegistrationCoreSensitiveTe
         biometricsIdentifierType.setLocationBehavior(PatientIdentifierType.LocationBehavior.NOT_USED);
         biometricsIdentifierType = patientService.savePatientIdentifierType(biometricsIdentifierType);
 	}
-	
+
 	private Patient createBasicPatient() {
 		Patient patient = new Patient();
 		PersonName pName = new PersonName();
@@ -103,7 +116,6 @@ public class RegistrationCoreServiceTest extends BaseRegistrationCoreSensitiveTe
 		patient.addName(pName);
 		
 		patient.setBirthdate(new Date());
-		patient.setDeathDate(new Date());
 		patient.setBirthdateEstimated(true);
 		patient.setGender("M");
 		

@@ -87,7 +87,7 @@ public class PdqSimilarPatientsSearcherTest {
 
     private void initPixPdqMessageUtil(){
         try {
-            when(pixPdqMessageUtil.interpretPIDSegments(Mockito.any(Message.class))).thenReturn(RET_VAL);
+            when(pixPdqMessageUtil.interpretPIDSegments(Mockito.nullable(Message.class))).thenReturn(RET_VAL);
             List<Map.Entry<String, String>> queryParams = new ArrayList<Map.Entry<String, String>>();
             queryParams.add(new AbstractMap.SimpleEntry("@PID.5.1", "Test"));
             when(pixPdqMessageUtil.patientToQPD3Params(Mockito.any(Patient.class))).thenReturn(queryParams);

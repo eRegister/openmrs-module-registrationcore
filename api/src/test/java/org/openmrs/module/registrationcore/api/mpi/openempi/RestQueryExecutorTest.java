@@ -18,6 +18,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.nullable;
 import static org.mockito.Mockito.*;
 
 public class RestQueryExecutorTest {
@@ -166,7 +167,7 @@ public class RestQueryExecutorTest {
     private void mockServerResponse(Object body, Class<?> value) {
         response = mock(ResponseEntity.class);
         when(response.getBody()).thenReturn(body);
-        when(restTemplate.exchange(anyString(),
+        when(restTemplate.exchange(nullable(String.class),
                 any(HttpMethod.class), any(HttpEntity.class), eq(value)))
                 .thenReturn(response);
     }

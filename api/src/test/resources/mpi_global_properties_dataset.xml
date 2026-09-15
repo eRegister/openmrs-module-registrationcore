@@ -17,7 +17,7 @@
     <global_property property="registrationcore.mpi.pdqIdentifierTypeUuidList" 
                      property_value="0d47284f-9e9b-4a81-a88b-8bb42bc0a904,0d47284f-9e9b-4a81-a88b-8bb42bc0a903"/>
 
-    <global_property property="registrationcore.openmrsIdenitfier.uuid"
+    <global_property property="registrationcore.openmrsIdentifier.uuid"
                      property_value="0d47284f-9e9b-4a81-a88b-8bb42bc0a903"/>
 
     <global_property property="registrationcore.mpi.personIdentifierTypeUuid"

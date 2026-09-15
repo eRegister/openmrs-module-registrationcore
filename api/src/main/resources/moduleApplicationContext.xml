@@ -28,34 +28,35 @@
         </property>
     </bean>
 
+    <bean id="bahmniRegCoreService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.registrationcore.api.impl.BahmniRegCoreServiceImpl">
+                <property name="dao" ref="registrationCoreDAO" />
+                <property name="patientService" ref="patientService" />
+                <property name="personService" ref="personService" />
+                <property name="adminService" ref="adminService" />
+                <property name="locationService" ref="locationService"/>
+                <property name="mpiPatientFilter" ref="registrationcore.openEmpiPatientFilter"/>
+                <property name="registrationCoreProperties" ref="registrationcore.coreProperties"/>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
+        </property>
+    </bean>
+
     <!-- Services accessible via Context.getService() -->
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
                 <value>org.openmrs.module.registrationcore.api.BahmniRegCoreService</value>
-                <bean
-                        class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-                    <property name="transactionManager">
-                        <ref bean="transactionManager" />
-                    </property>
-                    <property name="target">
-                        <bean name="bahmniRegCoreService" class="org.openmrs.module.registrationcore.api.impl.BahmniRegCoreServiceImpl">
-                            <property name="dao" ref="registrationCoreDAO" />
-                            <property name="patientService" ref="patientService" />
-                            <property name="personService" ref="personService" />
-                            <property name="adminService" ref="adminService" />
-                            <property name="locationService" ref="locationService"/>
-                            <property name="mpiPatientFilter" ref="registrationcore.openEmpiPatientFilter"/>
-                            <property name="registrationCoreProperties" ref="registrationcore.coreProperties"/>
-                        </bean>
-                    </property>
-                    <property name="preInterceptors">
-                        <ref bean="serviceInterceptors" />
-                    </property>
-                    <property name="transactionAttributeSource">
-                        <ref bean="transactionAttributeSource" />
-                    </property>
-                </bean>
+                <ref bean="bahmniRegCoreService" />
             </list>
         </property>
     </bean>
@@ -92,7 +93,7 @@
         <property name="moduleService">
             <list>
                 <value>${project.parent.groupId}.${project.parent.artifactId}.api.RegistrationCoreService</value>
-                <ref local="registrationCoreService" />
+                <ref bean="registrationCoreService" />
             </list>
         </property>
     </bean>

@@ -433,13 +433,12 @@ public class PixPdqMessageUtil {
                 for (XAD xad : pid.getPatientAddress()) {
                     PersonAddress pa = new PersonAddress();
                     pa.setAddress1(xad.getStreetAddress().getStreetOrMailingAddress().getValue());
-                    pa.setAddress2(xad.getStreetAddress().getStreetOrMailingAddress().getValue());
-                    pa.setCityVillage(xad.getOtherDesignation().getValue());
-                    //pa.setCountry(xad.getCountry().getValue());
-                    pa.setCountry("LESOTHO");
+                    pa.setAddress2(xad.getOtherDesignation().getValue());
+                    pa.setCityVillage(xad.getCity().getValue());
+                    pa.setStateProvince(xad.getStateOrProvince().getValue());
+                    pa.setCountry(xad.getCountry().getValue());
                     pa.setCountyDistrict(xad.getCountyParishCode().getValue());
                     pa.setPostalCode(xad.getZipOrPostalCode().getValue());
-                    pa.setStateProvince(xad.getCity().getValue());
                     if ("H".equals(xad.getAddressType().getValue())) {
                         pa.setPreferred(true);
                     }

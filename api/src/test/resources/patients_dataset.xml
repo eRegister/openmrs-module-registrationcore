@@ -14,6 +14,7 @@
       users                          1
   
 --><dataset>
+  <patient_identifier_type patient_identifier_type_id="3" uuid="0d47284f-9e9b-4a81-a88b-8bb42bc0a903" name="OpenMRS ID" description="OpenMRS patient identifier, with check-digit" validator="org.openmrs.patient.impl.LuhnIdentifierValidator" creator="1" date_created="2015-07-27 11:28:30.489" required="0" retired="0"/>
   <users user_id="1" system_id="admin" username="" password="4a1750c8607dfa237de36c6305715c223415189" salt="c788c6ad82a157b712392ca695dfcf2eed193d7f" creator="1" date_created="2005-01-01 00:00:00.0" person_id="1" retired="false" uuid="842f4bae-1692-11df-97a5-7038c432aabf"/>
 
   <person person_id="1" gender="M" birthdate_estimated="false" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="dd552fc1-1691-11df-97a5-7038c432aabf"/>

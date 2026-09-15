@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Minimal local replacement for idgen's own org/openmrs/module/idgen/include/TestData.xml,
+    which (as of idgen-api 4.14.0) bundles a patient_identifier_type row with a stale
+    CHECK_DIGIT attribute that no longer maps to any column, breaking dbunit dataset loading.
+    Only the rows registrationcore's tests actually depend on (identifier source id=1) are
+    reproduced here.
+-->
+<dataset>
+   <IDGEN_IDENTIFIER_SOURCE ID="1" UUID="0d47284f-9e9b-4a81-a88b-8bb42bc0a901" NAME="Test Sequential Generator" IDENTIFIER_TYPE="1" CREATOR="1" DATE_CREATED="2009-11-30 11:28:30.489" RETIRED="false" />
+   <IDGEN_SEQ_ID_GEN ID="1" first_identifier_base="1" NEXT_SEQUENCE_VALUE="6" base_character_set="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" PREFIX="" min_length="0" max_length="0" />
+</dataset>

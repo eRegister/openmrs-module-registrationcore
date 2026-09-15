@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.module.registrationcore.api.impl.IdentifierBuilder;
@@ -14,6 +16,7 @@ import org.openmrs.module.registrationcore.api.mpi.common.MpiProperties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,6 +41,7 @@ public class PatientBuilderTest {
 
     @Mock private PatientIdentifier openmrsidentifier;
     @Mock private PatientIdentifier ecidIdentifier;
+    @Mock private PatientIdentifier personIdentifier;
 
     @Before
     public void setUp() throws Exception {
@@ -46,6 +50,23 @@ public class PatientBuilderTest {
         mockIdentifierBuilder();
         mockRegistrationCoreProperties();
         when(mpiProperties.getMpiPersonIdentifierTypeUuid()).thenReturn(PERSON_IDENTIFIER_TYPE_UUID);
+        // Patient.getIdentifiers() is a TreeSet ordered via PatientIdentifier#compareTo. Plain
+        // mocks leave compareTo unstubbed, which returns 0 for every pair and makes the TreeSet
+        // silently collapse all three identifiers into one. Give each mock a stable, distinct
+        // ordering so all of them survive insertion.
+        stubCompareTo(openmrsidentifier);
+        stubCompareTo(ecidIdentifier);
+        stubCompareTo(personIdentifier);
+    }
+
+    private void stubCompareTo(final PatientIdentifier identifier) {
+        when(identifier.compareTo(any(PatientIdentifier.class))).thenAnswer(new Answer<Integer>() {
+            @Override
+            public Integer answer(InvocationOnMock invocation) {
+                PatientIdentifier other = (PatientIdentifier) invocation.getArguments()[0];
+                return Integer.compare(System.identityHashCode(identifier), System.identityHashCode(other));
+            }
+        });
     }
 
     private void mockIdentifierMapper() {
@@ -58,6 +79,8 @@ public class PatientBuilderTest {
                 .thenReturn(openmrsidentifier);
         when(identifierBuilder.createIdentifier(LOCAL_ECID_IDENTIFIER_TYPE_UUID, PATIENT_ECID_IDENTIFIER_VALUE, null))
                 .thenReturn(ecidIdentifier);
+        when(identifierBuilder.createIdentifier(PERSON_IDENTIFIER_TYPE_UUID, "1", null))
+                .thenReturn(personIdentifier);
     }
 
     private void mockRegistrationCoreProperties(){
